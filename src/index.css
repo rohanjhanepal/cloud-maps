@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Segoe UI", "Segoe UI Web (West European)", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #1b1b1f;
+  color: #ffffff;
+}
+
+/* Touch-friendly targets */
+@media (hover: none) and (pointer: coarse) {
+  button, select, input, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
