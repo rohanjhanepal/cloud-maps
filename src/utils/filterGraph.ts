@@ -27,13 +27,21 @@ function nodeMatchesFilters(node: GraphNode, filters: FilterState): boolean {
   return true
 }
 
+function getLinkEndId(end: string | { id?: string } | unknown): string {
+  if (typeof end === 'string') return end
+  if (typeof end === 'object' && end !== null && 'id' in end) return String((end as { id: string }).id)
+  return String(end)
+}
+
 function linkConnectsNodes(
   link: GraphLink,
   nodeIds: Set<string>,
   filters: FilterState
 ): boolean {
   if (filters.crossCloudOnly && link.type !== 'cross-cloud') return false
-  return nodeIds.has(link.source) && nodeIds.has(link.target)
+  const src = getLinkEndId(link.source)
+  const tgt = getLinkEndId(link.target)
+  return nodeIds.has(src) && nodeIds.has(tgt)
 }
 
 export function filterGraph(data: GraphData, filters: FilterState): GraphData {
@@ -45,8 +53,8 @@ export function filterGraph(data: GraphData, filters: FilterState): GraphData {
     const crossCloudNodeIds = new Set<string>()
     for (const link of data.links) {
       if (link.type === 'cross-cloud') {
-        crossCloudNodeIds.add(link.source)
-        crossCloudNodeIds.add(link.target)
+        crossCloudNodeIds.add(getLinkEndId(link.source))
+        crossCloudNodeIds.add(getLinkEndId(link.target))
       }
     }
     nodes = nodes.filter((n) => crossCloudNodeIds.has(n.id))

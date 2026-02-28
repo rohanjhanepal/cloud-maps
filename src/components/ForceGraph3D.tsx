@@ -34,23 +34,28 @@ export const ForceGraph3DComponent = forwardRef<GraphRef | null, ForceGraphProps
 
   const nodeVal = useCallback(() => 5, [])
 
-  const linkColor = useCallback((link: Record<string, unknown>) => {
-    return (link as { type?: string }).type === 'cross-cloud'
-      ? 'rgba(0, 188, 242, 0.8)'
-      : 'rgba(100, 116, 139, 0.5)'
+  const isCrossCloud = useCallback((link: Record<string, unknown>) => {
+    const t = (link as { type?: string }).type
+    return t === 'cross-cloud'
   }, [])
+
+  const linkColor = useCallback((link: Record<string, unknown>) => {
+    return isCrossCloud(link)
+      ? '#00ffcc'
+      : 'rgba(180, 200, 220, 0.8)'
+  }, [isCrossCloud])
 
   const linkWidth = useCallback((link: Record<string, unknown>) => {
-    return (link as { type?: string }).type === 'cross-cloud' ? 2 : 0.8
-  }, [])
+    return isCrossCloud(link) ? 3.5 : 1.5
+  }, [isCrossCloud])
 
   const linkDirectionalParticles = useCallback((link: Record<string, unknown>) => {
-    return (link as { type?: string }).type === 'cross-cloud' ? 2 : 0
-  }, [])
+    return isCrossCloud(link) ? 4 : 0
+  }, [isCrossCloud])
 
   const linkDirectionalParticleSpeed = useCallback((link: Record<string, unknown>) => {
-    return (link as { type?: string }).type === 'cross-cloud' ? 0.012 : 0
-  }, [])
+    return isCrossCloud(link) ? 0.02 : 0
+  }, [isCrossCloud])
 
   const handleNodeClick = useCallback(
     (node: { id: string }) => {
@@ -113,11 +118,11 @@ export const ForceGraph3DComponent = forwardRef<GraphRef | null, ForceGraphProps
       nodeLabel={(node) => nodeMap.get((node as { id: string }).id)?.name ?? ''}
       linkColor={linkColor}
       linkWidth={linkWidth}
-      linkOpacity={0.7}
+      linkOpacity={0.95}
       linkDirectionalParticles={linkDirectionalParticles}
       linkDirectionalParticleSpeed={linkDirectionalParticleSpeed}
       linkDirectionalParticleWidth={0.8}
-      linkDirectionalParticleColor={() => 'rgba(0, 188, 242, 0.85)'}
+      linkDirectionalParticleColor={() => '#00ffcc'}
       onNodeClick={handleNodeClick}
       onBackgroundClick={() => setSelectedNode(null)}
       backgroundColor="rgba(27,27,31,0)"
